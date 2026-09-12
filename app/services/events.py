@@ -1,6 +1,6 @@
 import queue
 import time
-from typing import Any, Dict, Optional
+from typing import Any, Dict
 
 
 class EventManager:
@@ -28,12 +28,17 @@ class EventManager:
 event_manager = EventManager()
 
 
-def event_stream_generator(manager: EventManager, timeout: Optional[float] = None):
+def event_stream_generator(manager: EventManager):
     """Generate SSE events with heartbeat support."""
     q = manager.listen()
     last_heartbeat = time.time()
 
     try:
+        # Emit an initial comment so the response headers are flushed at once.
+        # WSGI servers hold the headers back until the first non-empty chunk,
+        # which would delay the client's `open` event until the first heartbeat.
+        yield ": connected\n\n"
+
         while True:
             try:
                 data = q.get(timeout=5.0)
