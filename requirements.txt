@@ -7,5 +7,5 @@ pyotp==2.9.0
 gunicorn==26.2.0
 loguru==0.7.2
 pytest==8.4.2
-pytest-asyncio==0.25.1
+pytest-asyncio==0.26.0
 ruff==0.17.0
